@@ -171,11 +171,36 @@ def run() -> None:
                 # 飯店名稱
                 hotel = "未知飯店"
                 try:
-                    hints = page.locator("h1,h2,h3,h4,.hotelName,.hotel-name,.htlName").all_inner_texts()
-                    for h in hints:
-                        if any(k in h for k in ["東橫", "Toyoko", "Tokyo"]):
-                            hotel = h.strip()
+                    # 先試搜尋結果頁的特定 class
+                    hotel_selectors = [
+                        "[class*='hotelName']",
+                        "[class*='hotel-name']",
+                        "[class*='HotelName']",
+                        "[class*='htlName']",
+                        "[class*='CardResults_name']",
+                        "[class*='card-name']",
+                        "[class*='result-name']",
+                        "[class*='property-name']",
+                    ]
+                    for selector in hotel_selectors:
+                        els = page.locator(selector).all_inner_texts()
+                        if els:
+                            hotel = els[0].strip()
                             break
+
+                    # 若還是未知，從 h1~h4 找含關鍵字的
+                    if hotel == "未知飯店":
+                        hints = page.locator("h1,h2,h3,h4").all_inner_texts()
+                        for h in hints:
+                            if any(k in h for k in ["東橫", "Toyoko", "Tokyo", "Inn", "inn"]):
+                                hotel = h.strip()
+                                break
+
+                    # 最後嘗試從頁面標題抓
+                    if hotel == "未知飯店":
+                        title = page.title()
+                        if title and len(title) > 2:
+                            hotel = title.split("|")[0].strip()
                 except Exception:
                     pass
 
