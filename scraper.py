@@ -1,3 +1,7 @@
+"""
+Tokyo Inn 空房監控 - GitHub Actions 版本
+設定方式：在 GitHub repo 的 Settings > Secrets and variables > Actions 加入 Secrets
+"""
 import os
 import datetime
 import logging
