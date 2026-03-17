@@ -205,9 +205,34 @@ def run() -> None:
                 except Exception:
                     pass
 
-                no_room = any(k in body_text for k in [
-                    "沒有找到符合的搜尋結果", "No matching results", "沒有空房", "満室"
-                ])
+                # 無空房關鍵字（繁體、簡體、英文、日文）
+                no_room_keywords = [
+                    "沒有找到符合的搜尋結果",
+                    "没有找到符合的搜索结果",
+                    "No matching results",
+                    "沒有空房", "没有空房",
+                    "満室", "空室なし",
+                    "ご希望の条件に合う客室はございません",
+                    "该条件下暂无可用客房",
+                    "no rooms available",
+                ]
+                no_room_flag = any(k.lower() in body_text.lower() for k in no_room_keywords)
+
+                # 正向判斷：頁面上有沒有房間卡片
+                room_card_count = 0
+                try:
+                    room_card_count = page.locator(
+                        ".CardResults, .card-result, .hotel-card, "
+                        "[class*='CardResults'], [class*='hotelCard'], "
+                        "[class*='roomCard'], [class*='result-item']"
+                    ).count()
+                except Exception:
+                    pass
+
+                log.info(f"[{idx}] 無空房關鍵字: {no_room_flag} | 房間卡片數: {room_card_count}")
+
+                # 有無空房關鍵字 OR 完全沒有房間卡片 → 判定無空房
+                no_room = no_room_flag or room_card_count == 0
 
                 if no_room:
                     log.info(f"[{idx}] 無空房，跳過通知")
