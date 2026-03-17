@@ -173,6 +173,7 @@ def run() -> None:
                 try:
                     # 先試搜尋結果頁的特定 class
                     hotel_selectors = [
+                        "[class*='CardResults_title']",
                         "[class*='hotelName']",
                         "[class*='hotel-name']",
                         "[class*='HotelName']",
