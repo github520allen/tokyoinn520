@@ -1,4 +1,4 @@
-name: Tokyo Inn 空房監控
+name: Tokyo
 
 on:
   schedule:
