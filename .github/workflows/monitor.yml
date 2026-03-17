@@ -2,9 +2,9 @@ name: Tokyo
 
 on:
   schedule:
-    # 每 10 分鐘執行一次（UTC 時間，台灣是 UTC+8）
+    # 每 5 分鐘執行一次（UTC 時間，台灣是 UTC+8）
     # GitHub Actions 最小間隔是 5 分鐘
-    - cron: "*/10 * * * *"
+    - cron: "*/5 * * * *"
 
   # 也可以在 GitHub 網頁手動觸發
   workflow_dispatch:
