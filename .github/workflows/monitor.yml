@@ -1,12 +1,8 @@
-name: Tokyo
+name: Tokyo Inn 空房監控
 
 on:
   schedule:
-    # 每 5 分鐘執行一次（UTC 時間，台灣是 UTC+8）
-    # GitHub Actions 最小間隔是 5 分鐘
     - cron: "*/5 * * * *"
-
-  # 也可以在 GitHub 網頁手動觸發
   workflow_dispatch:
 
 jobs:
@@ -22,11 +18,29 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: 快取 pip 套件
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-playwright-requests
+
       - name: 安裝 Python 套件
         run: pip install playwright requests
 
-      - name: 安裝 Playwright Chromium
+      - name: 快取 Playwright 瀏覽器
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}-v1
+
+      - name: 安裝 Playwright Chromium（僅快取不存在時）
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: playwright install chromium --with-deps
+
+      - name: 安裝系統依賴（快取命中時仍需執行）
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: playwright install-deps chromium
 
       - name: 執行空房監控
         env:
