@@ -205,7 +205,7 @@ def run() -> None:
                     "沒有找到符合的搜尋結果", "No matching results", "沒有空房", "満室"
                 ])
 
-                    if False:  # 暫時強制發通知
+                if False:  # 暫時強制發通知
                     log.info(f"[{idx}] 無空房，跳過通知")
                 else:
                     found_any = True
